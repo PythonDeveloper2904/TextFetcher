@@ -148,14 +148,16 @@ def find_by_poem_type(poem_type: str, number) -> list:
     special_types = {"楚辞": "chuci", "诗经": "shijing", "乐府": "yuefu"}
     if poem_type in special_types:
         urls = []
-        pre_addr = r"https://www.gushiwen.cn/"
-        url = pre_addr + r"gushi/" + special_types[poem_type] + r".aspx"
+        pre_addr = r"https://www.gushiwen.cn"
+        url = pre_addr + r"/gushi/" + special_types[poem_type] + r".aspx"
         resp = get_response(url)
         resp = convert_data(resp)
         type_conts = resp.findAll("div", class_="typecont")  # 获取所有的组
         for con in type_conts:
-            addr = con.find("a")["href"]
-            urls.append(f"{pre_addr}{addr}")
+            a_lst = con.findAll("a")
+            for a in a_lst:
+                addr = a["href"]
+                urls.append(f"{pre_addr}{addr}")
         return
     while poems < number:
         # 这个URL中的page参数就是页数, tstr参数就是类型
