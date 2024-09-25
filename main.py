@@ -145,10 +145,22 @@ def find_by_poem_type(poem_type: str, number) -> list:
     poems = 0
     tq = tqdm(total=number, desc="爬取中, 请不要中断. 当前进度为")
     lst = []
+    special_types = {"楚辞": "chuci", "诗经": "shijing", "乐府": "yuefu"}
+    if poem_type in special_types:
+        urls = []
+        pre_addr = r"https://www.gushiwen.cn/"
+        url = pre_addr + r"gushi/" + special_types[poem_type] + r".aspx"
+        resp = get_response(url)
+        resp = convert_data(resp)
+        type_conts = resp.findAll("div", class_="typecont")  # 获取所有的组
+        for con in type_conts:
+            addr = con.find("a")["href"]
+            urls.append(f"{pre_addr}{addr}")
+        return
     while poems < number:
         # 这个URL中的page参数就是页数, tstr参数就是类型
         url = r"https://www.gushiwen.cn/shiwens/default.aspx?page=" + str(pages) + r"&tstr=" + poem_type
-        resp = get_response(url);
+        resp = get_response(url)
         resp = convert_data(resp)
         father = resp.find("div", id="leftZhankai")
         sons = father.findAll("div", class_="sons")
