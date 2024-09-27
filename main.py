@@ -158,7 +158,17 @@ def find_by_poem_type(poem_type: str, number) -> list:
             for a in a_lst:
                 addr = a["href"]
                 urls.append(f"{pre_addr}{addr}")
-        return
+        for url in urls:
+            resp = get_response(url)
+            resp = convert_data(resp)
+            yuanwen = resp.find(id="sonsyuanwen")
+            title = yuanwen.find("h1").text
+            time = yuanwen.find("p", class_="source").text.strip()
+            content = yuanwen.find("div", class_="conston").text
+            lst.append((title, time, content))
+
+        return lst
+
     while poems < number:
         # 这个URL中的page参数就是页数, tstr参数就是类型
         url = r"https://www.gushiwen.cn/shiwens/default.aspx?page=" + str(pages) + r"&tstr=" + poem_type
@@ -180,6 +190,7 @@ def find_by_poem_type(poem_type: str, number) -> list:
             tq.update(1)
         pages += 1
     return lst
+
 
 
 if __name__ == "__main__":
