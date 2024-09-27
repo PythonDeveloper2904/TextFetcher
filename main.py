@@ -143,7 +143,7 @@ def find_by_poem_type(poem_type: str, number) -> list:
     """
     pages = 1
     poems = 0
-    tq = tqdm(total=number, desc="爬取中, 请不要中断. 当前进度为")
+
     lst = []
     special_types = {"楚辞": "chuci", "诗经": "shijing", "乐府": "yuefu"}
     if poem_type in special_types:
@@ -156,19 +156,25 @@ def find_by_poem_type(poem_type: str, number) -> list:
         for con in type_conts:
             a_lst = con.findAll("a")
             for a in a_lst:
-                addr = a["href"]
+                if a.get("href"):
+                    addr = a["href"]
+                else:
+                    continue
                 urls.append(f"{pre_addr}{addr}")
-        for url in urls:
+        if number >= len(urls):
+            number = len(urls)
+        tq = tqdm(total=number, desc="爬取中, 请不要中断. 当前进度为")
+        for url in urls[:number]:
+            tq.update()
             resp = get_response(url)
             resp = convert_data(resp)
             yuanwen = resp.find(id="sonsyuanwen")
             title = yuanwen.find("h1").text
             time = yuanwen.find("p", class_="source").text.strip()
-            content = yuanwen.find("div", class_="conston").text
+            content = yuanwen.find("div", class_="contson").text
             lst.append((title, time, content))
-
         return lst
-
+    tq = tqdm(total=number, desc="爬取中, 请不要中断. 当前进度为")
     while poems < number:
         # 这个URL中的page参数就是页数, tstr参数就是类型
         url = r"https://www.gushiwen.cn/shiwens/default.aspx?page=" + str(pages) + r"&tstr=" + poem_type
@@ -190,7 +196,6 @@ def find_by_poem_type(poem_type: str, number) -> list:
             tq.update(1)
         pages += 1
     return lst
-
 
 
 if __name__ == "__main__":
