@@ -204,7 +204,7 @@ def find_by_title(title: str) -> list:
     :param title: 目标诗文的标题
     :return: 包含诗文信息的列表
     """
-    url = r"https://www.gushiwen.cn/search.aspx?value=" + title  # 构造带有标题搜索的URL
+    url = r"https://www.gushiwen.cn/search.aspx?value=" + title + r"&valuej=" + title[0]  # 构造带有标题搜索的URL
     resp = get_response(url)
     soup = convert_data(resp)
 
