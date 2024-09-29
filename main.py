@@ -198,6 +198,31 @@ def find_by_poem_type(poem_type: str, number) -> list:
     return lst
 
 
+def find_by_title(title: str) -> list:
+    """
+    根据标题爬取诗词
+    :param title: 目标诗文的标题
+    :return: 包含诗文信息的列表
+    """
+    url = r"https://www.gushiwen.cn/search.aspx?value=" + title  # 构造带有标题搜索的URL
+    resp = get_response(url)
+    soup = convert_data(resp)
+
+    poems = []
+    sons = soup.findAll("div", class_="sons")
+
+    for son in sons:
+        div2 = son.find("div", class_="cont")
+        poem_title = div2.findAll("p")[0].text.strip()
+        time = div2.findAll("p")[-1].text.strip()
+        content = div2.find("div", class_="contson").text.strip()
+        poems.append((poem_title, time, content))
+
+    if not poems:
+        print(Fore.RED + f"未找到标题为 '{title}' 的诗词。" + Style.RESET_ALL)
+    return poems
+
+
 if __name__ == "__main__":
     types = input(
         Fore.BLUE + "请输入你想要爬取诗文的功能\n[1] 按照作者爬取\n[2] 按照朝代爬取\n[3] 按照类型爬取\n[4] 按照标题爬取\n? " + Style.RESET_ALL).strip()
@@ -217,7 +242,9 @@ if __name__ == "__main__":
         lst = find_by_poem_type(poem_type, number)
         write(lst)
     elif types == '4':  # 按照标题爬取
-        pass
+        title = input(Fore.GREEN + "请输入诗文标题: " + Style.RESET_ALL).strip()
+        lst = find_by_title(title)
+        write(lst)
     else:
         print(Fore.RED + "选择的模式无效! " + Style.RESET_ALL)
         exit()
