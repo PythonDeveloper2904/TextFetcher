@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# -*- coding:utf-8 -*-
+# -*- coding: utf-8 -*-
 
 """
 Location: C:/Users/29042/PycharmProjects/TextFetcher/main.py
