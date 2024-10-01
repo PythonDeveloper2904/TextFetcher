@@ -4,7 +4,7 @@
 """
 Location: C:/Users/29042/PycharmProjects/TextFetcher/main.py
 Description: 诗词爬虫程序
-Created on 2024-9-12
+Created on 2024-10-1
 """
 
 import bs4
