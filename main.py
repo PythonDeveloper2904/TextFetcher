@@ -224,29 +224,42 @@ def find_by_title(title: str) -> list:
     return poems
 
 
-def read_json():
-    """读取json文件"""
+def find_maximum_number() -> int:
+    """
+    读取 json 文件并返回最大数量
+    :return: 最大数量
+    """
     with open("./config.json", encoding="utf-8") as f:
-        maximum_number = ["maximumNumber"]
+        data = json.load(f)
+        return data["maximumNumber"]
 
 
 if __name__ == "__main__":
-    maximum_number = read_json()
+    maximum_number = find_maximum_number()
     types = input(
         Fore.BLUE + "请输入你想要爬取诗文的功能\n[1] 按照作者爬取\n[2] 按照朝代爬取\n[3] 按照类型爬取\n[4] 按照标题爬取\n? " + Style.RESET_ALL).strip()
     if types == '1':  # 按照作者爬取
         author = input(Fore.GREEN + "请输入诗人的名字: " + Style.RESET_ALL).strip()
-        number = int(input(Fore.GREEN + f"请输入爬取的古诗数量 (不超过{max_number}) : " + Style.RESET_ALL))
+        number = int(input(Fore.GREEN + f"请输入爬取的古诗数量 (不超过{maximum_number}) : " + Style.RESET_ALL))
+        if number > maximum_number:
+            print(Fore.RED + f"爬取古诗数量不能超过{maximum_number}首! " + Style.RESET_ALL)
+            exit()
         lst = find_by_author(author, number)
         write(lst)
     elif types == '2':  # 按照朝代爬取
         dynasty = input(Fore.GREEN + "请输入朝代: " + Style.RESET_ALL).strip()
-        number = int(input(Fore.GREEN + f"请输入爬取的古诗数量 (不超过{max_number}) : " + Style.RESET_ALL))
+        number = int(input(Fore.GREEN + f"请输入爬取的古诗数量 (不超过{maximum_number}) : " + Style.RESET_ALL))
+        if number > maximum_number:
+            print(Fore.RED + f"爬取古诗数量不能超过{maximum_number}首! " + Style.RESET_ALL)
+            exit()
         lst = find_by_dynasty(dynasty, number)
         write(lst)
     elif types == '3':  # 按照类型爬取
         poem_type = input(Fore.GREEN + "请输入诗文类型: " + Style.RESET_ALL).strip()
-        number = int(input(Fore.GREEN + f"请输入爬取的古诗数量 (不超过{max_number}) : " + Style.RESET_ALL))
+        number = int(input(Fore.GREEN + f"请输入爬取的古诗数量 (不超过{maximum_number}) : " + Style.RESET_ALL))
+        if number > maximum_number:
+            print(Fore.RED + f"爬取古诗数量不能超过{maximum_number}首! " + Style.RESET_ALL)
+            exit()
         lst = find_by_poem_type(poem_type, number)
         write(lst)
     elif types == '4':  # 按照标题爬取
