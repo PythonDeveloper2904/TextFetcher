@@ -8,6 +8,7 @@ Created on 2024-9-12
 """
 
 import bs4
+import json
 import requests as rq
 from colorama import Fore, Style, init
 from tqdm import tqdm
@@ -44,7 +45,7 @@ def convert_data(html: str) -> bs4.BeautifulSoup:
 
 
 def write(lst: list):
-    with open(".\\poems.txt", "w", encoding="utf-8") as f:
+    with open("./poems.txt", "w", encoding="utf-8") as f:
         for poem in lst:
             f.write(poem[0] + "\n")  # 标题
             f.write(poem[1] + "\n")  # 朝代
@@ -223,22 +224,29 @@ def find_by_title(title: str) -> list:
     return poems
 
 
+def read_json():
+    """读取json文件"""
+    with open("./config.json", encoding="utf-8") as f:
+        maximum_number = ["maximumNumber"]
+
+
 if __name__ == "__main__":
+    maximum_number = read_json()
     types = input(
         Fore.BLUE + "请输入你想要爬取诗文的功能\n[1] 按照作者爬取\n[2] 按照朝代爬取\n[3] 按照类型爬取\n[4] 按照标题爬取\n? " + Style.RESET_ALL).strip()
     if types == '1':  # 按照作者爬取
         author = input(Fore.GREEN + "请输入诗人的名字: " + Style.RESET_ALL).strip()
-        number = int(input(Fore.GREEN + "请输入爬取的古诗数量: " + Style.RESET_ALL))
+        number = int(input(Fore.GREEN + f"请输入爬取的古诗数量 (不超过{max_number}) : " + Style.RESET_ALL))
         lst = find_by_author(author, number)
         write(lst)
     elif types == '2':  # 按照朝代爬取
         dynasty = input(Fore.GREEN + "请输入朝代: " + Style.RESET_ALL).strip()
-        number = int(input(Fore.GREEN + "请输入爬取的古诗数量: " + Style.RESET_ALL))
+        number = int(input(Fore.GREEN + f"请输入爬取的古诗数量 (不超过{max_number}) : " + Style.RESET_ALL))
         lst = find_by_dynasty(dynasty, number)
         write(lst)
     elif types == '3':  # 按照类型爬取
         poem_type = input(Fore.GREEN + "请输入诗文类型: " + Style.RESET_ALL).strip()
-        number = int(input(Fore.GREEN + "请输入爬取的古诗数量: " + Style.RESET_ALL))
+        number = int(input(Fore.GREEN + f"请输入爬取的古诗数量 (不超过{max_number}) : " + Style.RESET_ALL))
         lst = find_by_poem_type(poem_type, number)
         write(lst)
     elif types == '4':  # 按照标题爬取
